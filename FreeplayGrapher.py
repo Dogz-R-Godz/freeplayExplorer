@@ -124,8 +124,7 @@ def get_score(model: dict, round: int) -> float:
     if spacing > 0.08: return 1.4 * RBE
     return 1.8 * RBE
 
-# Compute averages for rounds 141 to 600 with 10000 seeds
-rounds = range(535, 601)
+rounds = range(logsSave['round'], START = logsSave['round']+50)
 average_RBE = {round: 0 for round in rounds}
 average_BADs = {round: 0 for round in rounds}
 average_FBADs = {round: 0 for round in rounds}
