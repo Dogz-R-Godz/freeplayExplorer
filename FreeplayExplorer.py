@@ -136,8 +136,8 @@ def main() -> None:
     averageFBADs:float = 0.0
     for x in range(100): #100000
         SEED:int = random.randint(0, 1000000000)#args.seed
-        START:int = 141# logsSave['round']   #141
-        END:int = 600 #logsSave['round']+10 #200
+        START:int = logsSave['round']   #141
+        END:int = logsSave['round']+10 #200
         ROUND:int = START
         total_RBE:int = 0
         total_cash:float = 0.0
