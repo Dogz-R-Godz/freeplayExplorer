@@ -2,7 +2,9 @@ import json
 import random
 import matplotlib.pyplot as plt
 import numpy as np
+import ProfileDecompiler
 
+ProfileDecompiler.decompile()
 # Load JSON data
 with open("Decrypted_Profile.json", "rb") as f:
     Profile = json.load(f)
