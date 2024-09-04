@@ -2,7 +2,9 @@ import json
 import argparse
 import random
 import json
+import ProfileDecompiler
 
+ProfileDecompiler.decompile()
 with open("Decrypted_Profile.json", "rb") as f:
     Profile=json.load(f)
 logsSave=Profile["savedMaps"]["Logs"]
