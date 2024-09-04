@@ -221,8 +221,8 @@ def main() -> None:
 
 
     SEED:int = logsSave['freeplayRoundSeed']#args.seed
-    START:int = 533 #logsSave['round']#args.start
-    END:int = 534 #logsSave['round']+1#args.end
+    START:int = logsSave['round']#args.start
+    END:int = logsSave['round']+10#args.end
     ROUND:int = START
     total_RBE:int = 0
     total_cash:float = 0.0
