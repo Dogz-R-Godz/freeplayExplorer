@@ -126,7 +126,7 @@ def get_score(model: dict, round: int) -> float:
     if spacing > 0.08: return 1.4 * RBE
     return 1.8 * RBE
 
-rounds = range(logsSave['round'], START = logsSave['round']+50)
+rounds = range(logsSave['round'], logsSave['round']+50)
 average_RBE = {round: 0 for round in rounds}
 average_BADs = {round: 0 for round in rounds}
 average_FBADs = {round: 0 for round in rounds}
