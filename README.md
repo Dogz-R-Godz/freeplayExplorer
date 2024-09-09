@@ -1,4 +1,4 @@
-written in java because at least its not python (it is now <:3)
+written in java because at least its not python (it is now >:3)
 
 compile with ``javac -cp libs/*; FreeplayExplorer.java``, it likely works on all java versions but my intellij is java 17 while my actual java is java 11 and they both work
 
