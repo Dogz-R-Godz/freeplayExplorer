@@ -1,5 +1,7 @@
 written in java because at least its not python (it is now >:3)
 
+(For the python code, if you get any errors, friend req me on discord (@dogzrgodz). If you have any questions or any cool findings, ping me with the message in Mackan Rules's discord server so more ppl can see as well.
+
 compile with ``javac -cp libs/*; FreeplayExplorer.java``, it likely works on all java versions but my intellij is java 17 while my actual java is java 11 and they both work
 
 for the python version, it relies on the cryptography library ```pip install cryptography```, the zlib library ```pip install zlib```, and the matplotlib library ```pip install matplotlib```
