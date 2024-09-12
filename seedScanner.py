@@ -283,7 +283,8 @@ if __name__ == "__main__":
     step=round(((2**31)-1)/cores)
     loadSave=False #Change to True after the first run if you want to keep going where you left off
     args=[(step*x, step*(x+1), values, x) for x in range(cores)] if not loadSave else [(-1, step*(x+1), values, x) for x in range(cores)]
-    
+    #To change the requirements for a seed to be considered, change the code from lines 191 to 219. 
+    #At default, it prioritises money until round 180, then it caps the amount of BADs it will permit. Then at round 210, it ignores regular BADs, and only restricts based on money and FBADs. Then from round 300-450, it doesnt care at all. On round 450, it makes sure that that seed makes more money overall than the average. After round 450, it only cares about FBADs.
     with multiprocessing.Pool(cores) as P:
         P.starmap(doSeeds, args)
 
