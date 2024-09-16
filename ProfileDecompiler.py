@@ -56,4 +56,7 @@ def decompile():
     if decompressed_data:
         with open(output_path, 'wb') as f:
             f.write(decompressed_data)
+            
+if __name__ == "__main__": 
+    decompile()
         
