@@ -149,8 +149,8 @@ def main() -> None:
         if ROUND > 1:
             v = rand.get_next_seed()
             initialBudget = get_budget(ROUND) 
-            budget = (initialBudget - (v - 0.5))*initialBudget
-            #budget = get_budget(ROUND) * (v-0.5)
+            #budget = (initialBudget - (v - 0.5))*initialBudget
+            budget = get_budget(ROUND) * (1.5-v)
         else:
             budget = get_budget(ROUND)
         original_budget = budget
