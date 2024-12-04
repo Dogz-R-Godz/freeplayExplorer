@@ -1,18 +1,15 @@
 import json
 import argparse
 import random
-import json
-import ProfileDecompiler
 
-ProfileDecompiler.decompile()
-with open("Decrypted_Profile.json", "rb") as f:
+with open("tempSave.json", "rb") as f:
     Profile=json.load(f)
-logsSave=Profile["savedMaps"]["Logs"]
+#logsSave=Profile["savedMaps"]["Logs"]
 
 number = int|float
 
 bloon_data:dict
-with open("bloonData.json") as f:
+with open("bloonDataOld.json") as f:
     bloon_data = json.load(f)
 
 freeplay_groups:list[dict]
@@ -93,7 +90,11 @@ def shuffle_seeded(l:list, seed:number):
     while True:
         value = rand.get_next_seed()
         index = int(list_len * value)
-        l[i], l[index] = l[index], l[i]
+        liOld = l[i]
+        lIndexOld = l[index]
+        l[i] = lIndexOld
+        l[index] = liOld
+        #l[i], l[index] = lIndexOld, liOld
         i -= 1
         if (i < 0):
             return
@@ -104,8 +105,9 @@ def get_budget(round:int):
     budget = round ** 7.7
     helper = round ** 1.75
     if round > 50:
-        return budget * 5e-11 + help + 20
+        return budget * 5e-11 + helper + 20
     return ((1 + round * 0.01) * (round * -3 + 400) * ((budget * 5e-11 + helper + 20) / 160) * 0.6)
+
 
 def get_score(model:dict, round:int) -> number:
     bloon:str = model["group"]["bloon"]
@@ -132,110 +134,23 @@ def main() -> None:
     #parser.add_argument("start", type=int)
     #parser.add_argument("end", type=int)
     #args = parser.parse_args()
-    averageCash:float = 0.0
-    averageRBE:float = 0.0
-    averageBADs:float = 0.0
-    averageFBADs:float = 0.0
-    for x in range(100): #100000
-        SEED:int = random.randint(0, 1000000000)#args.seed
-        START:int = logsSave['round']   #141
-        END:int = logsSave['round']+10 #200
-        ROUND:int = START
-        total_RBE:int = 0
-        total_cash:float = 0.0
-        total_time:int = 0
-        total_BADs:int = 0
-        total_FBADs:int = 0
-        while ROUND <= END:
-            rand = seeded_random(SEED + ROUND)
-            budget:float
-            if ROUND > 1:
-                v = rand.get_next_seed()
-                budget = get_budget(ROUND) * (1.5 - v)
-            else:
-                budget = get_budget(ROUND)
-            original_budget = budget
-            round_RBE:int = 0
-            round_cash:float = 0.0
-            round_time:int = 0
-            test_groups = list(range(529))
-            shuffle_seeded(test_groups, SEED + ROUND)
-            #print("+"+"-"*54+"+")
-            #print(f"| ROUND {ROUND:<46} |")
-            #print(f"+{'-'*18}+{'-'*17}+{'-'*17}+")
-            #print(f"|{' '*12}Bloon |Group|     Count |{' '*10}Length |")
-            #print(f"+{'-'*18}+{'-'*17}+{'-'*17}+")
-            for i in test_groups:
-                obj:dict = freeplay_groups[i]
-                bounds:list = obj["bounds"]
-                for j in range(len(bounds)):
-                    if bounds[j]["lowerBounds"] <= ROUND <= bounds[j]["upperBounds"]:
-                        break
-                else:
-                    continue
-                score:float = get_score(obj, ROUND) if obj['score'] == 0 else obj['score']
-                if score > budget: continue
-                bloon:str = obj["group"]["bloon"]
-                count:int = obj["group"]["count"]
-                round_RBE += Calculator.get_RBE(bloon, ROUND) * count
-                round_cash += Calculator.get_bloon_cash(bloon, ROUND) * count
-                if bloon == "Bad":
-                    total_BADs+=count
-                if bloon == "BadFortified":
-                    total_FBADs+=count
-                round_time += obj["group"]["end"]
-                budget -= score
-                #print(format_group(i, obj))
-            #print("+"+"-"*54+"+")
-            #print(f"| {f'Score budget: {original_budget-budget:,.2f}/{original_budget:,.2f}':<52} |")
-            #print(f"| {f'Round RBE: {round_RBE:,}':<52} |")
-            #print(f"| {f'Round Cash: {round_cash:,.2f}':<52} |")
-            #print(f"| {f'Round Length: {round_time:,}':<52} |")
-            #print(f"| {f'Health Multiplier: {Calculator.health_multiplier(ROUND)}':<52} |")
-            #print(f"| {f'Speed Multiplier: {Calculator.speed_multiplier(ROUND)}':<52} |")
-            ROUND += 1
-            total_cash += round_cash
-            total_RBE += round_RBE
-            total_time += round_time
-
-        #print(f"+{'-'*24}TOTAL{'-'*25}+")
-        #print(f"| {f'Total RBE: {total_RBE:,}':<52} |")
-        #print(f"| {f'Total BADs: {total_BADs:,}':<52} |")
-        #print(f"| {f'Total Cash: {total_cash:,.2f}':<52} |")
-        #print(f"| {f'Total Time: {total_time:,}':<52} |")
-        #print("+"+"-"*54+"+")
-        #if x%1000==0:
-        print(x)
-        averageCash+=total_cash
-        averageBADs+=total_BADs
-        averageFBADs+=total_FBADs
-        averageRBE+=total_RBE
-    averageCash/=100 #100000
-    averageRBE/=100 #100000
-    averageBADs/=100 #100000
-    averageFBADs/=100
-    print(f"+{'-'*24}TOTAL{'-'*25}+")
-    print(f"| {f'Average RBE: {averageRBE:,}':<52} |")
-    print(f"| {f'Average BADs: {averageBADs:,}':<52} |")
-    print(f"| {f'Average FBADs: {averageFBADs:,}':<52} |")
-    print(f"| {f'Average Cash: {averageCash:,.2f}':<52} |")
-    print("+"+"-"*54+"+")
-
-
-    SEED:int = logsSave['freeplayRoundSeed']#args.seed
-    START:int = logsSave['round']#args.start
-    END:int = logsSave['round']+10#args.end
+    SEED:int = int(input("Put in your seed here -> "))#178515437 #134_535_324  #logsSave['freeplayRoundSeed']#args.seed
+    START:int = 140 #logsSave['round']#args.start
+    END:int = 145    #logsSave['round']+10#args.end
     ROUND:int = START
     total_RBE:int = 0
     total_cash:float = 0.0
     total_time:int = 0
     total_BADs:int = 0
+    total_FBADs:int = 0
     while ROUND <= END:
         rand = seeded_random(SEED + ROUND)
         budget:float
         if ROUND > 1:
             v = rand.get_next_seed()
-            budget = get_budget(ROUND) * (1.5 - v)
+            initialBudget = get_budget(ROUND) 
+            budget = (initialBudget - (v - 0.5))*initialBudget
+            #budget = get_budget(ROUND) * (v-0.5)
         else:
             budget = get_budget(ROUND)
         original_budget = budget
@@ -245,7 +160,8 @@ def main() -> None:
         round_cash:float = 0.0
         round_time:int = 0
         test_groups = list(range(529))
-        shuffle_seeded(test_groups, SEED + ROUND)
+        seedPlusRound=SEED + ROUND
+        shuffle_seeded(test_groups, seedPlusRound)
         print("+"+"-"*54+"+")
         print(f"| ROUND {ROUND:<46} |")
         print(f"+{'-'*18}+{'-'*17}+{'-'*17}+")
@@ -255,7 +171,7 @@ def main() -> None:
             obj:dict = freeplay_groups[i]
             bounds:list = obj["bounds"]
             for j in range(len(bounds)):
-                if bounds[j]["lowerBounds"] <= ROUND <= bounds[j]["upperBounds"]:
+                if bounds[j]["lowerBounds"] <= ROUND and ROUND <= bounds[j]["upperBounds"]:
                     break
             else:
                 continue
@@ -265,6 +181,7 @@ def main() -> None:
             count:int = obj["group"]["count"]
             round_RBE += Calculator.get_RBE(bloon, ROUND) * count
             round_cash += Calculator.get_bloon_cash(bloon, ROUND) * count
+
             if bloon == "Bad":
                 round_BADs+=count
             if bloon == "BadFortified":
@@ -274,6 +191,7 @@ def main() -> None:
             print(format_group(i, obj))
         print("+"+"-"*54+"+")
         print(f"| {f'Score budget: {original_budget-budget:,.2f}/{original_budget:,.2f}':<52} |")
+        print(f"| {f'Score Multiplier: {v:,.5f}':<52} |")
         print(f"| {f'Round RBE: {round_RBE:,}':<52} |")
         print(f"| {f'Round Cash: {round_cash:,.2f}':<52} |")
         print(f"| {f'Round BADs: {round_BADs:,}':<52} |")
@@ -285,6 +203,17 @@ def main() -> None:
         total_cash += round_cash
         total_RBE += round_RBE
         total_time += round_time
+        total_FBADs += round_FBADs
+        total_BADs += round_BADs
+    print("+"+"-"*54+"+")
+    print(f"| {f'Total RBE: {total_RBE:,}':<52} |")
+    print(f"| {f'Total Cash: {total_cash:,.2f}':<52} |")
+    print(f"| {f'Total BADs: {total_BADs:,}':<52} |")
+    print(f"| {f'Total FBADs: {total_FBADs:,}':<52} |")
+    print(f"| {f'Total Length: {total_time:,}':<52} |")
+    print(f"| {f'Health Multiplier: {Calculator.health_multiplier(ROUND)}':<52} |")
+    print(f"| {f'Speed Multiplier: {Calculator.speed_multiplier(ROUND)}':<52} |")
+    print("+"+"-"*54+"+")
 
 if __name__ == "__main__":
     main()
