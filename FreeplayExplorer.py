@@ -2,8 +2,6 @@ import json
 import argparse
 import random
 
-with open("tempSave.json", "rb") as f:
-    Profile=json.load(f)
 #logsSave=Profile["savedMaps"]["Logs"]
 
 number = int|float
@@ -134,7 +132,7 @@ def main() -> None:
     #parser.add_argument("start", type=int)
     #parser.add_argument("end", type=int)
     #args = parser.parse_args()
-    SEED:int = int(input("Put in your seed here -> "))#178515437 #134_535_324  #logsSave['freeplayRoundSeed']#args.seed
+    SEED:int = 178515437 #134_535_324  #logsSave['freeplayRoundSeed']#args.seed
     START:int = 140 #logsSave['round']#args.start
     END:int = 145    #logsSave['round']+10#args.end
     ROUND:int = START
@@ -148,9 +146,7 @@ def main() -> None:
         budget:float
         if ROUND > 1:
             v = rand.get_next_seed()
-            initialBudget = get_budget(ROUND) 
-            #budget = (initialBudget - (v - 0.5))*initialBudget
-            budget = get_budget(ROUND) * (1.5-v)
+            budget = get_budget(ROUND) * (1.5 - v)
         else:
             budget = get_budget(ROUND)
         original_budget = budget
